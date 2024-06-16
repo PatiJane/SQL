@@ -139,3 +139,41 @@ JOIN
 GROUP BY 
     Authors.Author_Name;
 
+-- To list books priced below a certain amount
+
+SELECT 
+    Title,
+    Price
+FROM 
+    Books
+WHERE 
+    Price < 300
+ORDER BY 
+    Price;
+
+-- To calculate the total number of books and group by price range
+
+SELECT 
+    CASE
+        WHEN Price < 100 THEN 'Below 100'
+        WHEN Price BETWEEN 100 AND 299 THEN '100-299'
+        WHEN Price BETWEEN 300 AND 499 THEN '300-499'
+        ELSE '500 and above'
+    END AS Price_Range,
+    COUNT(*) AS Number_Of_Books
+FROM 
+    Books
+GROUP BY 
+    Price_Range;
+
+-- To calculate 5 most expensive books
+
+SELECT 
+    Title,
+    Price
+FROM 
+    Books
+ORDER BY 
+    Price DESC
+LIMIT 5;
+
