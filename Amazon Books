@@ -1,0 +1,141 @@
+CREATE DATABASE BestSellingBooks;
+
+USE BestSellingBooks;
+
+CREATE TABLE Authors (
+    Author_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Author_Name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Books (
+    Book_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    Rating DECIMAL(2, 1) NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE Books_Authors (
+    Book_ID INT,
+    Author_ID INT,
+    PRIMARY KEY (Book_ID, Author_ID),
+    FOREIGN KEY (Book_ID) REFERENCES Books(Book_ID),
+    FOREIGN KEY (Author_ID) REFERENCES Authors(Author_ID)
+);
+
+INSERT INTO Authors (Author_Name) VALUES ('Gagan Pratap Sir');
+INSERT INTO Authors (Author_Name) VALUES ('Nikhil Gupta');
+INSERT INTO Authors (Author_Name) VALUES ('James Clear');
+
+INSERT INTO Books (Title, Rating, Price) VALUES ('Maths Concept King All Formulas and Theorum | Smart Tricks | Arithmetic & Advance Maths', 4.7, 239.00);
+INSERT INTO Books (Title, Rating, Price) VALUES ('BlackBook of English Vocabulary May 2024 by Nikhil Gupta', 4.5, 299.00);
+INSERT INTO Books (Title, Rating, Price) VALUES ('Atomic Habits : the life-changing million-copy #1 bestseller', 4.6, 476.00);
+
+INSERT INTO Books_Authors (Book_ID, Author_ID) VALUES (1, 1);
+INSERT INTO Books_Authors (Book_ID, Author_ID) VALUES (2, 2);
+INSERT INTO Books_Authors (Book_ID, Author_ID) VALUES (3, 3);
+
+-- To list all books and their authors:
+SELECT 
+    Books.Title,
+    GROUP_CONCAT(Authors.Author_Name SEPARATOR ', ') AS Authors,
+    Books.Rating,
+    Books.Price
+FROM 
+    Books
+JOIN 
+    Books_Authors ON Books.Book_ID = Books_Authors.Book_ID
+JOIN 
+    Authors ON Books_Authors.Author_ID = Authors.Author_ID
+GROUP BY 
+    Books.Book_ID
+ORDER BY 
+    Books.Title;
+
+-- To calculate the average rating of all books:
+
+SELECT 
+    AVG(Rating) AS Average_Rating
+FROM 
+    Books;
+
+-- To find the most expensive book:
+
+SELECT 
+    Title,
+    Price
+FROM 
+    Books
+ORDER BY 
+    Price DESC
+LIMIT 1;
+
+-- To list books by a specific author:
+
+SELECT 
+    Books.Title,
+    Books.Rating,
+    Books.Price
+FROM 
+    Books
+JOIN 
+    Books_Authors ON Books.Book_ID = Books_Authors.Book_ID
+JOIN 
+    Authors ON Books_Authors.Author_ID = Authors.Author_ID
+WHERE 
+    Authors.Author_Name = 'James Clear';
+
+-- To calculate the total number of books sold (assuming we have the table 'Sales')
+
+SELECT 
+    COUNT(*) AS Total_Books_Sold
+FROM 
+    Sales;
+
+-- To find the book with the highest rating
+
+SELECT 
+    Title,
+    Rating
+FROM 
+    Books
+ORDER BY 
+    Rating DESC
+LIMIT 1;
+
+-- To calculate the revenue of book sales
+
+SELECT 
+    SUM(Sales.Quantity * Books.Price) AS Total_Revenue
+FROM 
+    Sales
+JOIN 
+    Books ON Sales.Book_ID = Books.Book_ID;
+
+-- To find the number of books written by each author
+
+SELECT 
+    Authors.Author_Name,
+    COUNT(Books_Authors.Book_ID) AS Number_Of_Books
+FROM 
+    Authors
+JOIN 
+    Books_Authors ON Authors.Author_ID = Books_Authors.Author_ID
+GROUP BY 
+    Authors.Author_Name
+ORDER BY 
+    Number_Of_Books DESC;
+
+-- To calculate the average price of books per author
+
+SELECT 
+    Authors.Author_Name,
+    AVG(Books.Price) AS Average_Price
+FROM 
+    Authors
+JOIN 
+    Books_Authors ON Authors.Author_ID = Books_Authors.Author_ID
+JOIN 
+    Books ON Books_Authors.Book_ID = Books.Book_ID
+GROUP BY 
+    Authors.Author_Name;
+
