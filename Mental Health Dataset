@@ -1,0 +1,128 @@
+CREATE TABLE DepressionRecords (
+    Number INT PRIMARY KEY,
+    Sleep INT,
+    Appetite INT,
+    Interest INT,
+    Fatigue INT,
+    Worthlessness INT,
+    Concentration INT,
+    Agitation INT,
+    SuicidalIdeation INT,
+    SleepDisturbance INT,
+    Aggression INT,
+    PanicAttacks INT,
+    Hopelessness INT,
+    Restlessness INT,
+    LowEnergy INT,
+    DepressionState VARCHAR(50)
+);
+
+INSERT INTO DepressionRecords (
+    Number, Sleep, Appetite, Interest, Fatigue, Worthlessness, Concentration, Agitation, SuicidalIdeation, SleepDisturbance, Aggression, PanicAttacks, Hopelessness, Restlessness, LowEnergy, DepressionState
+) VALUES 
+(1, 1, 1, 1, 5, 5, 1, 5, 5, 1, 5, 5, 5, 5, 5, 'Mild'),
+(2, 2, 5, 5, 1, 1, 5, 1, 1, 5, 1, 1, 1, 1, 1, 'Moderate'),
+(3, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 'Moderete'),
+(4, 1, 1, 1, 5, 5, 1, 5, 5, 1, 5, 5, 5, 5, 5, 'Mild'),
+(5, 2, 5, 5, 1, 1, 5, 1, 1, 5, 1, 1, 1, 1, 1, 'Moderate'),
+(6, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 'Moderate'),
+(7, 1, 1, 1, 5, 5, 1, 5, 5, 1, 5, 5, 5, 5, 5, 'Mild'),
+(8, 2, 5, 5, 1, 1, 5, 1, 1, 5, 1, 1, 1, 1, 1, 'No depression'),
+(9, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 'Moderate'),
+(10, 6, 1, 1, 5, 5, 1, 5, 5, 1, 5, 5, 5, 5, 5, 'Mild'),
+(11, 2, 5, 5, 6, 6, 5, 6, 6, 5, 6, 6, 6, 6, 6, 'Severe'),
+(12, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 'No depression'),
+(13, 1, 1, 1, 5, 5, 1, 5, 5, 1, 5, 5, 5, 5, 5, 'Mild'),
+(14, 2, 5, 5, 1, 1, 5, 1, 1, 5, 1, 1, 1, 1, 1, 'Mild'),
+(15, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 'No depression'),
+(16, 1, 1, 1, 5, 5, 1, 5, 5, 1, 5, 5, 5, 5, 5, 'Severe'),
+(17, 2, 5, 5, 1, 1, 5, 1, 1, 5, 1, 1, 1, 1, 1, 'No depression'),
+(18, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 'No depression'),
+(19, 1, 1, 1, 5, 5, 1, 5, 5, 1, 5, 5, 5, 5, 5, 'Severe');
+
+-- To count the number of records in each depression state
+
+SELECT DepressionState, COUNT(*) AS Count
+FROM DepressionRecords
+GROUP BY DepressionState;
+
+
+-- To find the average score for each symptom
+
+SELECT 
+    AVG(Sleep) AS AvgSleep,
+    AVG(Appetite) AS AvgAppetite,
+    AVG(Interest) AS AvgInterest,
+    AVG(Fatigue) AS AvgFatigue,
+    AVG(Worthlessness) AS AvgWorthlessness,
+    AVG(Concentration) AS AvgConcentration,
+    AVG(Agitation) AS AvgAgitation,
+    AVG(SuicidalIdeation) AS AvgSuicidalIdeation,
+    AVG(SleepDisturbance) AS AvgSleepDisturbance,
+    AVG(Aggression) AS AvgAggression,
+    AVG(PanicAttacks) AS AvgPanicAttacks,
+    AVG(Hopelessness) AS AvgHopelessness,
+    AVG(Restlessness) AS AvgRestlessness,
+    AVG(LowEnergy) AS AvgLowEnergy
+FROM DepressionRecords;
+
+-- To find records with severe depression
+
+SELECT * 
+FROM DepressionRecords
+WHERE DepressionState = 'Severe';
+
+
+-- To find records with high suicidal ideation (score 5)
+
+SELECT * 
+FROM DepressionRecords
+WHERE SuicidalIdeation = 5;
+
+-- To find the minimum and maximum fatigue scores
+
+SELECT 
+    MAX(Fatigue) AS MaxFatigue, 
+    MIN(Fatigue) AS MinFatigue 
+FROM DepressionRecords;
+
+-- To find records where all symptoms are above certain threshold
+
+SELECT * 
+FROM DepressionRecords
+WHERE 
+    Sleep > 3 AND
+    Appetite > 3 AND
+    Interest > 3 AND
+    Fatigue > 3 AND
+    Worthlessness > 3 AND
+    Concentration > 3 AND
+    Agitation > 3 AND
+    SuicidalIdeation > 3 AND
+    SleepDisturbance > 3 AND
+    Aggression > 3 AND
+    PanicAttacks > 3 AND
+    Hopelessness > 3 AND
+    Restlessness > 3 AND
+    LowEnergy > 3;
+
+
+-- To identify high risk individuals 
+
+SELECT *
+FROM DepressionRecords
+WHERE 
+    SuicidalIdeation > 4 AND
+    Hopelessness > 4 AND
+    LowEnergy > 4;
+
+-- To find the seasonal trends in depression states
+
+SELECT 
+    EXTRACT(MONTH FROM date) AS Month,
+    DepressionState,
+    COUNT(*) AS Count
+FROM DepressionRecords
+GROUP BY Month, DepressionState
+ORDER BY Month;
+
