@@ -1,0 +1,106 @@
+CREATE TABLE NetflixShows (
+    show_id VARCHAR(10),
+    type VARCHAR(20),
+    title VARCHAR(255),
+    director VARCHAR(255),
+    cast TEXT,
+    country VARCHAR(255),
+    date_added DATE,
+    release_year INT,
+    rating VARCHAR(10),
+    duration VARCHAR(20),
+    listed_in VARCHAR(255),
+    description TEXT
+);
+
+INSERT INTO NetflixShows (show_id, type, title, director, cast, country, date_added, release_year, rating, duration, listed_in, description) VALUES
+('s1', 'Movie', 'Duck the Halls: A Mickey Mouse Christmas Special', 'Alonso Ramirez Ramos, Dave Wasson', 'Chris Diamantopoulos, Tony Anselmo, Tress MacNeille, Bill Farmer, Russi Taylor, Corey Burton', '', '2021-11-26', 2016, 'TV-G', '23 min', 'Animation, Family', 'Join Mickey and the gang as they duck the halls!'),
+('s2', 'Movie', 'Ernest Saves Christmas', 'John Cherry', 'Jim Varney, Noelle Parker, Douglas Seale', '', '2021-11-26', 1988, 'PG', '91 min', 'Comedy', 'Santa Claus passes his magic bag to a new St. Nic.'),
+('s3', 'Movie', 'Ice Age: A Mammoth Christmas', 'Karen Disher', 'Raymond Albert Romano, John Leguizamo, Denis Leary, Queen Latifah', 'United States', '2021-11-26', 2011, 'TV-G', '23 min', 'Animation, Comedy, Family', 'Sid the Sloth is on Santa\'s naughty list.'),
+('s4', 'Movie', 'The Queen Family Singalong', 'Hamish Hamilton', 'Darren Criss, Adam Lambert, Derek Hough, Alexander Jean, Fall Out Boy, Jimmie Allen', '', '2021-11-26', 2021, 'TV-PG', '41 min', 'Musical', 'This is real life, not just fantasy!'),
+('s5', 'TV Show', 'The Beatles: Get Back', '', 'John Lennon, Paul McCartney, George Harrison, Ringo Starr', '', '2021-11-25', 2021, '', '1 Season', 'Docuseries, Historical, Music', 'A three-part documentary from Peter Jackson capturing a moment in music history with The Beatles.'),
+('s6', 'Movie', 'Becoming Cousteau', 'Liz Garbus', 'Jacques Yves Cousteau, Vincent Cassel', 'United States', '2021-11-24', 2021, 'PG-13', '94 min', 'Biographical, Documentary', 'An inside look at the legendary life of adventurer Jacques-Yves Cousteau.'),
+('s7', 'TV Show', 'Hawkeye', '', 'Jeremy Renner, Hailee Steinfeld, Vera Farmiga, Fra Fee, Tony Dalton, Zahn McClarnon', '', '2021-11-24', 2021, 'TV-14', '1 Season', 'Action-Adventure, Superhero', 'Clint Barton/Hawkeye must team up with skilled archer Kate Bishop to unravel a criminal conspiracy.'),
+('s8', 'TV Show', 'Port Protection Alaska', '', 'Gary Muehlberger, Mary Miller, Curly Leach, Sam Carlson, Stuart Andrews, David Squibb', 'United States', '2021-11-24', 2015, 'TV-14', '2 Seasons', 'Docuseries, Reality, Survival', 'Residents of Port Protection must combat volatile conditions to survive and thrive in Alaska.'),
+('s9', 'TV Show', 'Secrets of the Zoo: Tampa', '', 'Dr. Ray Ball, Dr. Lauren Smith, Chris Massaro, Tiffany Burns, Mike Burns, Melinda Mendolusky', 'United States', '2021-11-24', 2019, 'TV-PG', '2 Seasons', 'Animals & Nature, Docuseries, Family', 'A day in the life at ZooTampa is anything but ordinary. It\'s extraordinary!'),
+('s10', 'Movie', 'A Muppets Christmas: Letters To Santa', 'Kirk R. Thatcher', 'Steve Whitmire, Dave Goelz, Bill Barretta, Eric Jacobson', 'United States', '2021-11-19', 2008, 'G', '45 min', 'Comedy, Family, Musical', 'Celebrate the holiday season with all your favorite Muppets.'),
+('s11', 'Movie', 'Adventure Thru the Walt Disney Archives', 'John Gleim', 'Don Hahn, Kathryn Beaumont, Pete Docter, Kevin Feige, Mark Hamill, Bob Iger', '', '2021-11-19', 2020, 'TV-PG', '59 min', 'Documentary', 'Explore the treasures and rich history of the Walt Disney Archives.'),
+('s12', 'Movie', 'Puppy for Hanukkah', '', '', '', '2021-11-19', 2020, 'TV-G', '4 min', 'Comedy, Family, Music', 'Check out Daveed Digg\'s official music video "Puppy for Hanukkah!"'),
+('s13', 'Movie', 'The Pixar Story', 'Leslie Iwerks', 'Stacy Keach, John Lasseter, Brad Bird, John Musker, Ron Clements, Frank Thomas', 'United States', '2021-11-19', 2007, 'G', '91 min', 'Documentary, Family', 'A groundbreaking company forever changes the face of filmmaking.'),
+
+-- To select shows released after 2020:
+SELECT title, release_year FROM NetflixShows WHERE release_year > 2020;
+
+-- To order shows by release year:
+SELECT title, release_year FROM NetflixShows ORDER BY release_year DESC;
+
+-- To count the number of movies and TV shows:
+SELECT type, COUNT(*) as count FROM NetflixShows GROUP BY type;
+
+-- To create and join tables Netflix Shows and Genres:
+
+CREATE TABLE Genres (
+    show_id VARCHAR(10),
+    genre VARCHAR(50)
+);
+
+INSERT INTO Genres (show_id, genre) VALUES
+('s1', 'Animation'),
+('s1', 'Family'),
+('s2', 'Comedy'),
+('s3', 'Animation');
+
+SELECT ns.title, g.genre 
+FROM NetflixShows ns
+JOIN Genres g ON ns.show_id = g.show_id;
+
+-- To combine title and description:
+SELECT CONCAT(title, ' - ', description) as full_info FROM NetflixShows;
+
+-- To find unique ratings:
+SELECT DISTINCT rating FROM NetflixShows;
+
+-- To find titles that start with 'The'
+SELECT title FROM NetflixShows WHERE title LIKE 'The%';
+
+-- To find titles that contain 'Christmas':
+SELECT title FROM NetflixShows WHERE title LIKE '%Christmas%';
+
+-- To find NULL values:
+SELECT * FROM NetflixShows WHERE country IS NULL OR director IS NULL OR cast IS NULL;
+
+-- To delete NULL values:
+DELETE FROM NetflixShows WHERE country IS NULL OR director IS NULL OR cast IS NULL;
+
+-- To join more than 2 tables assuming we have Directors and CastMembers:
+
+SELECT ns.title, d.name as director, cm.name as cast_member
+FROM NetflixShows ns
+JOIN Directors d ON ns.director_id = d.director_id
+JOIN CastMembers cm ON ns.cast_id = cm.cast_id;
+
+-- To find titles with more than 20 characters:
+SELECT title FROM NetflixShows WHERE LENGTH(title) > 20;
+
+-- To extract the year from date added:
+SELECT title, SUBSTRING(date_added, -4) as year_added FROM NetflixShows;
+
+-- To categorize shows by release date:
+
+SELECT title, release_year,
+CASE 
+    WHEN release_year >= 2020 THEN 'Recent'
+    WHEN release_year >= 2010 THEN 'Last Decade'
+    ELSE 'Older'
+END as category
+FROM NetflixShows;
+
+-- To find the most recent show added:
+SELECT * FROM NetflixShows WHERE date_added = (SELECT MAX(date_added) FROM NetflixShows);
+
+
+
+
+
+
+
